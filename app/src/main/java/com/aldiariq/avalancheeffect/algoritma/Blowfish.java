@@ -69,7 +69,7 @@ public class Blowfish {
              */
             inStream = new FileInputStream(rawFile);
             outStream = new FileOutputStream(encryptedFile);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[32];
             int len;
             while ((len = inStream.read(buffer)) > 0) {
                 outStream.write(cipher.update(buffer, 0, len));
@@ -89,8 +89,6 @@ public class Blowfish {
         } catch (IOException ex) {
             System.out.println(ex);
         }
-
-        rawFile.delete();
     }
 
     /**
@@ -115,7 +113,7 @@ public class Blowfish {
              */
             inStream = new FileInputStream(encryptedFile);
             outStream = new FileOutputStream(decryptedFile);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[32];
             int len;
             while ((len = inStream.read(buffer)) > 0) {
                 outStream.write(cipher.update(buffer, 0, len));
@@ -124,7 +122,6 @@ public class Blowfish {
             outStream.write(cipher.doFinal());
             inStream.close();
             outStream.close();
-            encryptedFile.delete();
         } catch (IllegalBlockSizeException ex) {
             System.out.println(ex);
         } catch (BadPaddingException ex) {
@@ -136,5 +133,14 @@ public class Blowfish {
         } catch (IOException ex) {
             System.out.println(ex);
         }
+    }
+
+    public void deleteFile(String srcPath){
+        File deleteFile = new File(srcPath);
+        deleteFile.delete();
+    }
+
+    public long hitunglamaProses(long waktumulai, long waktuselesai){
+        return waktuselesai - waktumulai;
     }
 }

@@ -1,8 +1,5 @@
 package com.aldiariq.avalancheeffect;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,13 +12,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.aldiariq.avalancheeffect.algoritma.Blowfish;
 import com.aldiariq.avalancheeffect.utils.FileUtils;
 
 public class Dekripsi extends AppCompatActivity {
 
     private Button btnPilihfile, btnDekripsifile;
-    private TextView txtLokasifile, txtLokasihasildekrip;
+    private TextView txtLokasifile, txtWaktudekripsi, txtLokasihasildekrip;
     private EditText etPasswordblowfish;
 
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
@@ -53,10 +53,18 @@ public class Dekripsi extends AppCompatActivity {
                 String fileinput = txtLokasifile.getText().toString().trim();
                 String fileoutput = fileinput.replace(".enc", "");
 
+                long waktumulai = System.currentTimeMillis();
+
                 Blowfish algoritmaBlowfish = new Blowfish(passwordblowfish);
                 algoritmaBlowfish.decrypt(fileinput, fileoutput);
 
+                long waktuselesai = System.currentTimeMillis();
+
+                txtWaktudekripsi.setText("Lama Proses : " + algoritmaBlowfish.hitunglamaProses(waktumulai, waktuselesai) + "ms");
+
                 txtLokasihasildekrip.setText(fileoutput);
+
+                algoritmaBlowfish.deleteFile(fileinput);
             }
         });
     }
@@ -65,6 +73,7 @@ public class Dekripsi extends AppCompatActivity {
         this.btnPilihfile = (Button) findViewById(R.id.btnPilihfiledekripsi);
         this.btnDekripsifile = (Button) findViewById(R.id.btnDekripsidekripsi);
         this.txtLokasifile = (TextView) findViewById(R.id.txtLokasifiledekripsi);
+        this.txtWaktudekripsi = (TextView) findViewById(R.id.txtWaktudekripsi);
         this.txtLokasihasildekrip = (TextView) findViewById(R.id.txtLokasifilehasildekripsi);
         this.etPasswordblowfish = (EditText) findViewById(R.id.etPasswordblowfishdekripsi);
     }

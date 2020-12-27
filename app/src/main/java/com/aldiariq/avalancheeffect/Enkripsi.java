@@ -1,8 +1,5 @@
 package com.aldiariq.avalancheeffect;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,13 +12,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.aldiariq.avalancheeffect.algoritma.AvalancheEffect;
 import com.aldiariq.avalancheeffect.algoritma.Blowfish;
 import com.aldiariq.avalancheeffect.utils.FileUtils;
 
 public class Enkripsi extends AppCompatActivity {
 
     private Button btnPilihfile, btnEnkripsifile;
-    private TextView txtLokasifile, txtHasilavalanche, txtLokasihasilenkrip;
+    private TextView txtLokasifile, txtHasilavalance, txtWaktuenkripsi, txtLokasihasilenkrip;
     private EditText etPasswordblowfish;
 
     private static final int MY_REQUEST_CODE_PERMISSION = 1000;
@@ -53,13 +54,24 @@ public class Enkripsi extends AppCompatActivity {
                 String lokasifileinput = txtLokasifile.getText().toString().trim();
                 String lokasifileoutput = lokasifileinput + ".enc";
 
+                long waktumulai = System.currentTimeMillis();
+
                 Blowfish algoritmaBlowfish = new Blowfish(passwordblowfish);
                 algoritmaBlowfish.encrypt(lokasifileinput, lokasifileoutput);
 
+                long waktuselesai = System.currentTimeMillis();
+
                 txtLokasihasilenkrip.setText(lokasifileoutput);
 
-                Intent halamanUtama = new Intent(Enkripsi.this, MainActivity.class);
-                startActivity(halamanUtama);
+                txtWaktuenkripsi.setText("Lama Proses : " + algoritmaBlowfish.hitunglamaProses(waktumulai, waktuselesai) + "ms");
+
+                AvalancheEffect avalancheEffect = new AvalancheEffect(lokasifileinput, lokasifileoutput);
+                txtHasilavalance.setText("Avalanche Effect : " + avalancheEffect.hitungAvalanche() + " %");
+
+                algoritmaBlowfish.deleteFile(lokasifileinput);
+
+//                Intent halamanUtama = new Intent(Enkripsi.this, MainActivity.class);
+//                startActivity(halamanUtama);
             }
         });
     }
@@ -68,7 +80,8 @@ public class Enkripsi extends AppCompatActivity {
         this.btnPilihfile = (Button) findViewById(R.id.btnPilihfileenkripsi);
         this.btnEnkripsifile = (Button) findViewById(R.id.btnEnkripsienkripsi);
         this.txtLokasifile = (TextView) findViewById(R.id.txtLokasifileenkripsi);
-        this.txtHasilavalanche = (TextView) findViewById(R.id.txtHasilavalancheenkripsi);
+        this.txtHasilavalance = (TextView) findViewById(R.id.txtHasilavalance);
+        this.txtWaktuenkripsi = (TextView) findViewById(R.id.txtWaktuenkripsi);
         this.txtLokasihasilenkrip = (TextView) findViewById(R.id.txtLokasifilehasilenkripsi);
         this.etPasswordblowfish = (EditText) findViewById(R.id.etPasswordblowfishenkripsi);
     }
